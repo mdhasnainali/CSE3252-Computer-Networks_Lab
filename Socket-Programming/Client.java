@@ -8,14 +8,22 @@ public class Client{
             Socket s = new Socket("localhost", 6666);
             while(true){
                 DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-                BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-                String message = reader.readLine();
-                dout.writeUTF(message);
+                String message_to_server = reader.readLine();
+                dout.writeUTF(message_to_server);
                 
-                if(message.equals("exit")){
+                if(message_to_server.equals("exit")){
                     dout.close();
+                    s.close();
+                    break;
+                }
+
+                DataInputStream dis = new DataInputStream(s.getInputStream());
+                String message_from_server = (String)dis.readUTF();
+                System.out.println("Server: "+message_from_server);
+                if(message_from_server.equals("exit")){
+                    dis.close();
                     s.close();
                     break;
                 }
